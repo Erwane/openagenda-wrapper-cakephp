@@ -32,7 +32,7 @@ class CakeWrapper extends HttpWrapper
     /**
      * Set client in wrapper. Useful for unit tests.
      *
-     * @param \Cake\Http\Client $client Guzzle client
+     * @param \Cake\Http\Client $client CakePHP client
      * @return void
      */
     public function setClient(Client $client): void
@@ -92,7 +92,7 @@ class CakeWrapper extends HttpWrapper
     }
 
     /**
-     * Call guzzle request and handle exceptions.
+     * Call client request and handle exceptions.
      *
      * @param string $method Request method
      * @param \Laminas\Diactoros\Uri $uri Request URI
