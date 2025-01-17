@@ -49,7 +49,7 @@ class CakeWrapper extends HttpWrapper
      */
     public function prepareOptions(array $options, array $data = []): array
     {
-        $options['allow_redirects'] = false;
+        $options['redirect'] = false;
         $options['headers']['Accept'] = 'application/json';
         $options['headers']['User-Agent'] = HttpWrapperInterface::USER_AGENT;
 
@@ -59,20 +59,13 @@ class CakeWrapper extends HttpWrapper
                 return is_resource($value);
             });
 
-            if ($resources) {
-                $options['multipart'] = [];
-                foreach ($data as $key => $value) {
-                    $options['multipart'][] = [
-                        'name' => $key,
-                        'contents' => $value,
-                    ];
-                }
-            } else {
-                $options['json'] = $data;
+            if (!$resources) {
+                $options['type'] = 'json';
+                $data = json_encode($data);
             }
         }
 
-        return $options;
+        return [$options, $data];
     }
 
     /**
@@ -96,15 +89,14 @@ class CakeWrapper extends HttpWrapper
      *
      * @param string $method Request method
      * @param \Laminas\Diactoros\Uri $uri Request URI
-     * @param array $params Request params
+     * @param array $data Request data
+     * @param array $options Request params
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \OpenAgenda\Wrapper\HttpWrapperException
      */
-    protected function _request(string $method, Uri $uri, array $params): ResponseInterface
+    protected function _request(string $method, Uri $uri, $data = [], array $options = []): ResponseInterface
     {
         try {
-            $method = strtoupper($method);
-            $callback = strtolower($method);
             /**
              * @uses \Cake\Http\Client::head()
              * @uses \Cake\Http\Client::get()
@@ -112,9 +104,9 @@ class CakeWrapper extends HttpWrapper
              * @uses \Cake\Http\Client::patch()
              * @uses \Cake\Http\Client::delete()
              */
-            return $this->http->$callback((string)$uri, $params);
+            return $this->http->$method((string)$uri, $data, $options);
         } catch (Exception $e) {
-            $message = sprintf('Wrapper %s request failed. %s', $method, $e->getMessage());
+            $message = sprintf('Wrapper %s request failed. %s', strtoupper($method), $e->getMessage());
             throw new HttpWrapperException($message, $e->getCode(), $e);
         }
     }
@@ -125,9 +117,9 @@ class CakeWrapper extends HttpWrapper
     public function head($uri, array $params = []): ResponseInterface
     {
         $uri = $this->buildUri($uri);
-        $params = $this->prepareOptions($params);
+        [$options, ] = $this->prepareOptions($params);
 
-        return $this->_request('HEAD', $uri, $params);
+        return $this->_request(__FUNCTION__, $uri, [], $options);
     }
 
     /**
@@ -136,9 +128,9 @@ class CakeWrapper extends HttpWrapper
     public function get($uri, array $params = []): ResponseInterface
     {
         $uri = $this->buildUri($uri);
-        $params = $this->prepareOptions($params);
+        [$options, ] = $this->prepareOptions($params);
 
-        return $this->_request('GET', $uri, $params);
+        return $this->_request(__FUNCTION__, $uri, [], $options);
     }
 
     /**
@@ -147,9 +139,9 @@ class CakeWrapper extends HttpWrapper
     public function post($uri, array $data, array $params = []): ResponseInterface
     {
         $uri = $this->buildUri($uri);
-        $params = $this->prepareOptions($params, $data);
+        [$options, $data] = $this->prepareOptions($params, $data);
 
-        return $this->_request('POST', $uri, $params);
+        return $this->_request(__FUNCTION__, $uri, $data, $options);
     }
 
     /**
@@ -158,9 +150,9 @@ class CakeWrapper extends HttpWrapper
     public function patch($uri, array $data, array $params = []): ResponseInterface
     {
         $uri = $this->buildUri($uri);
-        $params = $this->prepareOptions($params, $data);
+        [$options, $data] = $this->prepareOptions($params, $data);
 
-        return $this->_request('PATCH', $uri, $params);
+        return $this->_request(__FUNCTION__, $uri, $data, $options);
     }
 
     /**
@@ -169,8 +161,8 @@ class CakeWrapper extends HttpWrapper
     public function delete($uri, array $params = []): ResponseInterface
     {
         $uri = $this->buildUri($uri);
-        $params = $this->prepareOptions($params);
+        [$options, ] = $this->prepareOptions($params);
 
-        return $this->_request('DELETE', $uri, $params);
+        return $this->_request(__FUNCTION__, $uri, [], $options);
     }
 }

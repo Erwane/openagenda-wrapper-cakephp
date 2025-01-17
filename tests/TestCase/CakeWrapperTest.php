@@ -59,45 +59,44 @@ class CakeWrapperTest extends TestCase
                 ['headers' => ['x-foo' => 'bar']],
                 [],
                 [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'User-Agent' => HttpWrapperInterface::USER_AGENT,
-                        'x-foo' => 'bar',
+                    [
+                        'headers' => [
+                            'Accept' => 'application/json',
+                            'User-Agent' => HttpWrapperInterface::USER_AGENT,
+                            'x-foo' => 'bar',
+                        ],
+                        'redirect' => false,
                     ],
-                    'allow_redirects' => false,
+                    [],
                 ],
             ],
             [
                 [],
                 ['key' => 'value', 'other' => 23],
                 [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'User-Agent' => HttpWrapperInterface::USER_AGENT,
+                    [
+                        'headers' => [
+                            'Accept' => 'application/json',
+                            'User-Agent' => HttpWrapperInterface::USER_AGENT,
+                        ],
+                        'type' => 'json',
+                        'redirect' => false,
                     ],
-                    'allow_redirects' => false,
-                    'json' => ['key' => 'value', 'other' => 23],
+                    json_encode(['key' => 'value', 'other' => 23]),
                 ],
             ],
             [
                 [],
                 ['key' => 'value', 'image' => $resource],
                 [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'User-Agent' => HttpWrapperInterface::USER_AGENT,
-                    ],
-                    'allow_redirects' => false,
-                    'multipart' => [
-                        [
-                            'name' => 'key',
-                            'contents' => 'value',
+                    [
+                        'headers' => [
+                            'Accept' => 'application/json',
+                            'User-Agent' => HttpWrapperInterface::USER_AGENT,
                         ],
-                        [
-                            'name' => 'image',
-                            'contents' => $resource,
-                        ],
+                        'redirect' => false,
                     ],
+                    ['key' => 'value', 'image' => $resource],
                 ],
             ],
         ];
@@ -111,9 +110,9 @@ class CakeWrapperTest extends TestCase
         $wrapper = new CakeWrapper();
         $wrapper->setClient($this->http);
 
-        $results = $wrapper->prepareOptions($options, $data);
+        [$options, $data] = $wrapper->prepareOptions($options, $data);
 
-        $this->assertEquals($expected, $results);
+        $this->assertEquals($expected, [$options, $data]);
     }
 
     public function testBuildUriFromUrl(): void
@@ -202,8 +201,9 @@ class CakeWrapperTest extends TestCase
             ->method('head')
             ->with(
                 'https://example.com',
+                [],
                 [
-                    'allow_redirects' => false,
+                    'redirect' => false,
                     'headers' => [
                         'User-Agent' => HttpWrapperInterface::USER_AGENT,
                         'Accept' => 'application/json',
@@ -224,8 +224,9 @@ class CakeWrapperTest extends TestCase
             ->method('get')
             ->with(
                 'https://example.com',
+                [],
                 [
-                    'allow_redirects' => false,
+                    'redirect' => false,
                     'headers' => [
                         'User-Agent' => HttpWrapperInterface::USER_AGENT,
                         'Accept' => 'application/json',
@@ -246,14 +247,15 @@ class CakeWrapperTest extends TestCase
             ->method('post')
             ->with(
                 'https://example.com',
+                json_encode(['foo' => 'bar']),
                 [
-                    'allow_redirects' => false,
+                    'redirect' => false,
+                    'type' => 'json',
                     'headers' => [
                         'User-Agent' => HttpWrapperInterface::USER_AGENT,
                         'Accept' => 'application/json',
                         'x-foo' => 'bar',
                     ],
-                    'json' => ['foo' => 'bar'],
                 ]
             )
             ->willReturn(new Response());
@@ -269,14 +271,15 @@ class CakeWrapperTest extends TestCase
             ->method('patch')
             ->with(
                 'https://example.com',
+                json_encode(['foo' => 'bar']),
                 [
-                    'allow_redirects' => false,
+                    'redirect' => false,
+                    'type' => 'json',
                     'headers' => [
                         'User-Agent' => HttpWrapperInterface::USER_AGENT,
                         'Accept' => 'application/json',
                         'x-foo' => 'bar',
                     ],
-                    'json' => ['foo' => 'bar'],
                 ]
             )
             ->willReturn(new Response());
@@ -292,8 +295,9 @@ class CakeWrapperTest extends TestCase
             ->method('delete')
             ->with(
                 'https://example.com',
+                [],
                 [
-                    'allow_redirects' => false,
+                    'redirect' => false,
                     'headers' => [
                         'User-Agent' => HttpWrapperInterface::USER_AGENT,
                         'Accept' => 'application/json',

@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": "^7.2, <8.0",
+        "php": "^7.2",
         "erwane/openagenda-api": "3.0.*",
         "cakephp/cakephp": "^3.10",
         "psr/http-client": "^1"
