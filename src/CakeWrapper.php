@@ -6,6 +6,7 @@ namespace OpenAgenda\Wrapper;
 use Cake\Core\Exception\CakeException;
 use Cake\Http\Client;
 use Laminas\Diactoros\Uri;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -15,9 +16,9 @@ use Psr\Http\Message\UriInterface;
 class CakeWrapper extends HttpWrapper
 {
     /**
-     * @var \Cake\Http\Client|\Psr\Http\Client\ClientInterface
+     * @var \Psr\Http\Client\ClientInterface|\Cake\Http\Client
      */
-    protected $http;
+    protected ClientInterface|Client $http;
 
     /**
      * {@inheritDoc}
@@ -74,7 +75,7 @@ class CakeWrapper extends HttpWrapper
      * @param \Psr\Http\Message\UriInterface|string $url Url as string or UriInterface
      * @return \Psr\Http\Message\UriInterface|\Laminas\Diactoros\Uri
      */
-    public function buildUri($url): UriInterface
+    public function buildUri(UriInterface|string $url): Uri|UriInterface
     {
         $uri = $url;
         if (is_string($url)) {
@@ -89,13 +90,17 @@ class CakeWrapper extends HttpWrapper
      *
      * @param string $method Request method
      * @param \Laminas\Diactoros\Uri $uri Request URI
-     * @param array $data Request data
+     * @param array|string $data Request data
      * @param array $options Request params
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \OpenAgenda\Wrapper\HttpWrapperException
      */
-    protected function _request(string $method, Uri $uri, $data = [], array $options = []): ResponseInterface
-    {
+    protected function _request(
+        string $method,
+        Uri $uri,
+        array|string $data = [],
+        array $options = []
+    ): ResponseInterface {
         try {
             /**
              * @uses \Cake\Http\Client::head()
