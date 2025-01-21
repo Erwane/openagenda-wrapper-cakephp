@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace OpenAgenda\Wrapper;
 
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException;
 use Cake\Http\Client;
 use Laminas\Diactoros\Uri;
 use Psr\Http\Message\ResponseInterface;
@@ -105,7 +105,7 @@ class CakeWrapper extends HttpWrapper
              * @uses \Cake\Http\Client::delete()
              */
             return $this->http->$method((string)$uri, $data, $options);
-        } catch (Exception $e) {
+        } catch (CakeException $e) {
             $message = sprintf('Wrapper %s request failed. %s', strtoupper($method), $e->getMessage());
             throw new HttpWrapperException($message, $e->getCode(), $e);
         }

@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace OpenAgenda\Wrapper\Test\TestCase;
 
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException;
 use Cake\Http\Client;
 use Cake\Http\Client\Request;
 use Cake\Http\Client\Response;
@@ -130,13 +130,13 @@ class CakeWrapperTest extends TestCase
 
         $this->http->expects($this->once())
             ->method('get')
-            ->willThrowException(new Exception('error', 504));
+            ->willThrowException(new CakeException('error', 504));
 
         try {
             $wrapper->get($this->uri);
         } catch (HttpWrapperException $e) {
             $this->assertEquals('Wrapper GET request failed. error', $e->getMessage());
-            $this->assertInstanceOf(Exception::class, $e->getPrevious());
+            $this->assertInstanceOf(CakeException::class, $e->getPrevious());
             $this->assertNull($e->getRequest());
             $this->assertNull($e->getResponse());
         }

@@ -12,4 +12,5 @@ CakePHP wrapper for [erwane/openagenda-api](https://github.com/Erwane/openagenda
 
 | version | OpenAgenda-API Package | CakePHP | PHP min |
 |---------|------------------------|---------|---------|
-| 1.3.*   | 3.0.*                  | ^3.0    | PHP 7.2 |
+| 1.3.*   | 3.0.*                  | ^3.10   | PHP 7.2 |
+| 1.4.*   | 3.0.*                  | ^4.2    | PHP 7.4 |
