@@ -18,3 +18,31 @@ CakePHP wrapper for [erwane/openagenda-api](https://github.com/Erwane/openagenda
 | 2.5.*   | ^3.1                   | ^5.0    | PHP 8.1 |
 
 ## Usage
+
+```php
+composer require erwane/openagenda-wrapper-cakephp
+```
+
+```php
+use Cake\Cache\Cache;
+use OpenAgenda\OpenAgenda;
+use OpenAgenda\Wrapper\CakeWrapper
+
+// PSR-18 Http client.
+$wrapper = new CakeWrapper($guzzleOptions);
+
+// PSR-16 Simple cache. Optional
+$cache = Cache::pool('default');
+
+// Create the OpenAgenda client. The public key is required for reading data (GET)
+// The private key is optional and only needed for writing data (POST, PUT, DELETE)
+$oa = new OpenAgenda([
+    'public_key' => 'my public key', // Required
+    'secret_key' => 'my secret key', // Optional, only for create/update/delete
+    'wrapper' => $wrapper, // Required
+    'cache' => $cache, // Optional
+    'defaultLang' => 'fr', // Optional
+]);
+```
+
+Check [OpenAgenda API lib](https://github.com/Erwane/openagenda-api/blob/3.x/README.md) for details.
