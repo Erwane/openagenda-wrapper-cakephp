@@ -15,3 +15,6 @@ CakePHP wrapper for [erwane/openagenda-api](https://github.com/Erwane/openagenda
 | 1.3.*   | 3.0.*                  | ^3.10   | PHP 7.2 |
 | 1.4.*   | 3.0.*                  | ^4.2    | PHP 7.4 |
 | 2.4.*   | ^3.1                   | ^4.2    | PHP 8.0 |
+| 2.5.*   | ^3.1                   | ^5.0    | PHP 8.1 |
+
+## Usage

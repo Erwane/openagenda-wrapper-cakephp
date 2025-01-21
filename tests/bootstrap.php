@@ -14,6 +14,6 @@ declare(strict_types=1);
 
 use Cake\Core\Configure;
 
-require_once dirname(__DIR__) . '/vendor/cakephp/cakephp/src/basics.php';
+require_once dirname(__DIR__) . '/vendor/cakephp/cakephp/src/Core/functions_global.php';
 
 Configure::write('debug', true);
